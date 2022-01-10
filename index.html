@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8">
+    <title>Command 8 Tests</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/webmidi@next/dist/iife/webmidi.iife.js"></script>
+
+    <script type="module">
+      var c8in, c8out;
+      WebMidi
+        .enable({sysex: true})
+        .then(onEnabled)
+        .catch(err => alert(err));
+
+      function onEnabled() {
+
+        if (WebMidi.inputs.length < 1) {
+          document.body.innerHTML+= "No input device detected.";
+          return;
+        }
+        if (WebMidi.outputs.length < 1) {
+            document.body.innerHTML+= "No output device detected.";
+            return;
+        }
+        
+        c8in = WebMidi.getInputByName('Command8 Port 1');
+        if (c8in.state == 'connected') {
+            document.body.innerHTML+= "Command8 Port 1 input connected.<br>";
+        }
+        else {
+            document.body.innerHTML+= "Command8 Port 1 input not connected.";
+            return;
+        }
+        c8out = WebMidi.getOutputByName('Command8 Port 1');
+        if (c8out.state == 'connected') {
+            document.body.innerHTML+= "Command8 Port 1 output connected.<br>";
+        }
+        else {
+            document.body.innerHTML+= "Command8 Port 1 output not connected.";
+            return;
+        }
+
+        const listener = WebMidi.inputs[0].addListener("midimessage", e => {
+            //document.body.innerHTML+= `${e.message.type}<br>`;
+            doTest1(e.message);
+            });
+      }
+      function displayByte(byte)
+      {
+        document.body.innerHTML+=byte.toString(16);
+        document.body.innerHTML+=' ';
+      }
+      function doTest1(message) {
+        // display message type
+        document.body.innerHTML+= `${message.type} `;
+        // display message data
+        message.data.forEach(displayByte);
+        if (message.type == 'noteon')
+        {
+          // display note info
+          document.body.innerHTML+=' note:';
+          document.body.innerHTML+=message.data[1];
+          document.body.innerHTML+=' velocity:';
+          document.body.innerHTML+=message.data[2];
+        }
+        if (message.type == 'controlchange')
+        {
+          // display control change info
+          document.body.innerHTML+=' controller:';
+          document.body.innerHTML+=message.data[1];
+          document.body.innerHTML+=' value:';
+          document.body.innerHTML+=message.data[2];
+        }
+        document.body.innerHTML+='<br>';
+        c8out.send(message.data);
+      }
+
+    </script>
+
+  </head>
+
+  <body>
+    <h1>Command 8 Test 1</h1>
+  </body>
+
+</html>
