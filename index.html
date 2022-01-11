@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/webmidi@next/dist/iife/webmidi.iife.js"></script>
 
     <script type="module">
-      var test = 5;
+      var test = 6;
       var c8in, c8out;
       WebMidi
         .enable({sysex: false})
@@ -51,8 +51,7 @@
               case 1: displayFormat1(e.message); break;
               case 2: displayFormat2(e.message); break;
               case 3: displayFormat3(e.message); break;
-              case 4: displayFormat3(e.message); break;
-              case 5: displayFormat3(e.message); break;
+              default: displayFormat3(e.message); break;
             }
             if (e.message.type == 'controlchange')
             {
@@ -66,6 +65,41 @@
             runTest4();
         if (test == 5)
             runTest5();
+        if (test == 6)
+            runTest6();
+      }
+      function runTest6()
+      {
+        var vectorQueue = [];
+        var startNote = 65;
+        var endNote = 65;
+        var startSubVel = 0;
+        var endSubVel = 0;
+        var senderRate = 10;
+        for (var note=startNote; note<=endNote; note++)
+        {
+          for (var i=0; i<2; i++)
+          {
+            for (var val=startSubVel; val<=endSubVel; val++)
+            {
+              var velocity = i==0?0:0x40;
+              velocity |= val;
+              vectorQueue.push([note, velocity]);
+            }
+          }
+        }
+        var timer = setInterval(test6Sender, senderRate);
+        function test6Sender() {
+          if (vectorQueue.length > 0)
+          {
+            var vector = vectorQueue.shift();
+            c8out.playNote(vector[0], {channels:1, rawAttack:vector[1]});
+          }
+          else
+          {
+            clearInterval(timer);
+          }
+        }
       }
       function runTest5()
       {
@@ -82,8 +116,8 @@
             vectorQueue.push([note, vel]);
           }
         }
-        var timer = setInterval(test4Sender, senderRate);
-        function test4Sender() {
+        var timer = setInterval(test5Sender, senderRate);
+        function test5Sender() {
           if (vectorQueue.length > 0)
           {
             var vector = vectorQueue.shift();
@@ -210,7 +244,7 @@
   </head>
 
   <body>
-    <h1>Command 8 Test 5</h1>
+    <h1>Command 8 Test 6</h1>
   </body>
 
 </html>
