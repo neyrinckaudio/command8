@@ -12,7 +12,7 @@
     <script type="module">
       var c8in, c8out;
       WebMidi
-        .enable({sysex: true})
+        .enable({sysex: false})
         .then(onEnabled)
         .catch(err => alert(err));
 
@@ -45,8 +45,7 @@
         }
 
         const listener = WebMidi.inputs[0].addListener("midimessage", e => {
-            //document.body.innerHTML+= `${e.message.type}<br>`;
-            doTest1(e.message);
+            doTest2(e.message);
             });
       }
       function displayByte(byte)
@@ -54,7 +53,39 @@
         document.body.innerHTML+=byte.toString(16);
         document.body.innerHTML+=' ';
       }
+      function byteString(byte, base)
+      {
+        var val = byte.toString(base);
+        val = val.padStart(7, '0');
+        val+=' ';
+        return val;
+      }
       function doTest1(message) {
+        // display message type
+        document.body.innerHTML+= `${message.type} `;
+        // display message data
+        document.body.innerHTML.padEnd(20,' ');
+        message.data.forEach(displayByte);
+        if (message.type == 'noteon')
+        {
+          // display note info
+          document.body.innerHTML+=' note:';
+          document.body.innerHTML+=byteString(message.data[1], 10);
+          document.body.innerHTML+=' velocity:';
+          document.body.innerHTML+=byteString(message.data[2], 10);
+        }
+        if (message.type == 'controlchange')
+        {
+          // display control change info
+          document.body.innerHTML+=' controller:';
+          document.body.innerHTML+=byteString(message.data[1], 10);
+          document.body.innerHTML+=' value:';
+          document.body.innerHTML+=byteString(message.data[2], 10);
+        }
+        document.body.innerHTML+='<br>';
+        c8out.send(message.data);
+      }
+      function doTest2(message) {
         // display message type
         document.body.innerHTML+= `${message.type} `;
         // display message data
@@ -63,17 +94,17 @@
         {
           // display note info
           document.body.innerHTML+=' note:';
-          document.body.innerHTML+=message.data[1];
+          document.body.innerHTML+=byteString(message.data[1], 2);
           document.body.innerHTML+=' velocity:';
-          document.body.innerHTML+=message.data[2];
+          document.body.innerHTML+=byteString(message.data[2], 2);
         }
         if (message.type == 'controlchange')
         {
           // display control change info
           document.body.innerHTML+=' controller:';
-          document.body.innerHTML+=message.data[1];
+          document.body.innerHTML+=byteString(message.data[1], 2);
           document.body.innerHTML+=' value:';
-          document.body.innerHTML+=message.data[2];
+          document.body.innerHTML+=byteString(message.data[2], 2);
         }
         document.body.innerHTML+='<br>';
         c8out.send(message.data);
@@ -84,7 +115,7 @@
   </head>
 
   <body>
-    <h1>Command 8 Test 1</h1>
+    <h1>Command 8 Test 2</h1>
   </body>
 
 </html>
