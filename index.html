@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/webmidi@next/dist/iife/webmidi.iife.js"></script>
 
     <script type="module">
-      var test = 4;
+      var test = 5;
       var c8in, c8out;
       WebMidi
         .enable({sysex: false})
@@ -52,17 +52,48 @@
               case 2: displayFormat2(e.message); break;
               case 3: displayFormat3(e.message); break;
               case 4: displayFormat3(e.message); break;
+              case 5: displayFormat3(e.message); break;
             }
             if (e.message.type == 'controlchange')
             {
               // display control change info
               e.message.data[1] += 1;
             }
-            if (test != 4)  // don't reflect
+            if (test < 4)  // don't reflect
               c8out.send(message.data);
             });
         if (test == 4)
             runTest4();
+        if (test == 5)
+            runTest5();
+      }
+      function runTest5()
+      {
+        var vectorQueue = [];
+        var startNote = 0;
+        var endNote = 0;
+        var startVelocity = 0;
+        var endVelocity = 127;
+        var senderRate = 10;
+        for (var note=startNote; note<=endNote; note++)
+        {
+          for (var vel=startVelocity; vel<=endVelocity; vel++)
+          {
+            vectorQueue.push([note, vel]);
+          }
+        }
+        var timer = setInterval(test4Sender, senderRate);
+        function test4Sender() {
+          if (vectorQueue.length > 0)
+          {
+            var vector = vectorQueue.shift();
+            c8out.playNote(vector[0], {channels:1, rawAttack:vector[1]});
+          }
+          else
+          {
+            clearInterval(timer);
+          }
+        }
       }
       function runTest4()
       {
@@ -179,7 +210,7 @@
   </head>
 
   <body>
-    <h1>Command 8 Test 4</h1>
+    <h1>Command 8 Test 5</h1>
   </body>
 
 </html>
