@@ -228,3 +228,57 @@ noteon 90 5 0 note:0000101 velocity:0000000
 1. Bits 3-6 of the controller number change from small to larger as the value stays constant. Then when the value increases, bits 3-6 change from small to larger again. Possibly, bits 3-6 represent more precision of the fader position.
 2. Because I am manually moving the fader I can't test if reflecting the message will also move the fader.
 
+## Test 3
+Test 3 displays the controller number as two parts: bits 3-6 and bits 0-2. Also, when reflecting the controller message back to the device, the controller number is increased by one.
+
+Here I move fader 1 a bit.
+```
+noteon 90 5 40 note:0000101 velocity:1000000
+controlchange b0 20 12 controller:0100 000 value:0010010
+controlchange b0 38 12 controller:0111 000 value:0010010
+controlchange b0 10 13 controller:0010 000 value:0010011
+controlchange b0 30 13 controller:0110 000 value:0010011
+controlchange b0 8 14 controller:0001 000 value:0010100
+controlchange b0 20 14 controller:0100 000 value:0010100
+controlchange b0 0 15 controller:0000 000 value:0010101
+controlchange b0 20 15 controller:0100 000 value:0010101
+controlchange b0 0 16 controller:0000 000 value:0010110
+controlchange b0 18 16 controller:0011 000 value:0010110
+controlchange b0 30 16 controller:0110 000 value:0010110
+controlchange b0 8 17 controller:0001 000 value:0010111
+controlchange b0 20 17 controller:0100 000 value:0010111
+controlchange b0 38 17 controller:0111 000 value:0010111
+controlchange b0 18 18 controller:0011 000 value:0011000
+controlchange b0 30 18 controller:0110 000 value:0011000
+controlchange b0 8 19 controller:0001 000 value:0011001
+controlchange b0 28 19 controller:0101 000 value:0011001
+controlchange b0 10 1a controller:0010 000 value:0011010
+controlchange b0 28 1a controller:0101 000 value:0011010
+controlchange b0 8 1b controller:0001 000 value:0011011
+controlchange b0 30 1b controller:0110 000 value:0011011
+controlchange b0 8 1c controller:0001 000 value:0011100
+controlchange b0 28 1c controller:0101 000 value:0011100
+controlchange b0 0 1d controller:0000 000 value:0011101
+controlchange b0 20 1d controller:0100 000 value:0011101
+controlchange b0 38 1d controller:0111 000 value:0011101
+controlchange b0 10 1e controller:0010 000 value:0011110
+controlchange b0 28 1e controller:0101 000 value:0011110
+controlchange b0 0 1f controller:0000 000 value:0011111
+controlchange b0 18 1f controller:0011 000 value:0011111
+controlchange b0 30 1f controller:0110 000 value:0011111
+controlchange b0 8 20 controller:0001 000 value:0100000
+controlchange b0 20 20 controller:0100 000 value:0100000
+controlchange b0 38 20 controller:0111 000 value:0100000
+controlchange b0 10 21 controller:0010 000 value:0100001
+controlchange b0 28 21 controller:0101 000 value:0100001
+controlchange b0 0 22 controller:0000 000 value:0100010
+controlchange b0 18 22 controller:0011 000 value:0100010
+controlchange b0 30 22 controller:0110 000 value:0100010
+controlchange b0 8 23 controller:0001 000 value:0100011
+controlchange b0 20 23 controller:0100 000 value:0100011
+noteon 90 5 0 note:0000101 velocity:0000000
+```
+#### Fader Observations
+1. When I move a fader, the fader after it moves acccordingly. That is, moving fader 1 makes fader 2 move, and so on, up to moving fader 8 which makes fader 1 move. It is good evidence that bits 0-2 indicate the fader.
+2. Bits 3-6 never got a value larger than 7. That is, bit 6 is always zero. If these bits add fader precision, then there are just three bits that add to the seven bits encoded in the value. That implies a max fader resolution of of 10-bits.
+
