@@ -379,6 +379,11 @@ I think the Note is acting like a bitfield and velocity addresses the strip.
 ## Test 7
 Test 7 confirms my idea that the meter LEDs for a strip are addressed by the velocity 0-7 and the note, offset by 64, is a bitfield for teh meters. In teh code you can set the bitfield and the velocity and light up the meters as desired.
 
+## Test 8
+Going back to Test 6, I could not find any way to use note on messages to light more than just a few encoder ring LEDs. So, for test 8 I will send all possible controller change values.
+
+Observation - Controller numbers 0-63 repeatedly address the faders 1-8 and the value sets the fader position. Controller numbers 64-127 appear to have no effect on the surface.
+
 
 
 
