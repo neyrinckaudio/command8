@@ -376,6 +376,9 @@ This turns ON all Strip 1, Meter 0 LED.
 
 I think the Note is acting like a bitfield and velocity addresses the strip.
 
+## Test 7
+Test 7 confirms my idea that the meter LEDs for a strip are addressed by the velocity 0-7 and the note, offset by 64, is a bitfield for teh meters. In teh code you can set the bitfield and the velocity and light up the meters as desired.
+
 
 
 
