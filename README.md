@@ -294,3 +294,25 @@ Test 4 sends every possible "note on" to the device on channel 1. It sends at a 
 1. All LEDs, except for the encoder ring LEDs, can be probably be controlled with "note on" messages.
 2. Oddly, a few of the encoder ring LEDs turned on, so that is a mystery. Perhaps others turned on and off quickly so that I could not see them.
 
+## Test 5
+Test 5 is similar to Test 4, but now I can set ranges for the "note on" vectors, set the rate, and run refined tests.
+
+note 0-0, vel 0-127, 10 ms
+Observation - Several LEDs turn on during the test. At the end, the LCD changes by clearing the "(Offline)". About five seconds after the test completes, all teh LEDs turn off and the LCD displays "(Offline)" again.
+
+note 0-0, vel 0-126, 10 ms
+Observation - after test runs, These buttons are ON:Pan, EQ, Select 1-8, Enter, Flip, Plugin. All remain lit forever after the test. The LCD "(Offline)" indication never changes.
+
+Now if I press the ON buttons, I notice they all send note = 0, which makes sense.
+
+note 0-0, vel 127-127, 10 ms
+Observation - Sending out a note=0, vel=127 message makes the device sends out a note=0, vel=127 message. And the "(Offline)" LCD text goes away. And all the LEDs turn off after several seconds.
+
+note 0-0, vel 0-126, 100 ms
+Now I run this range repeatedly and observe the LEDs. I can see that the buttons turn off early in the test and back on later in the test. That matches the observed velocities for reflected button down messages have bit 6 set in the velocity.
+
+note 1-1, vel 0-126, 100 ms
+These LEDS are ON: Send, Select Green LED 1-8, Undo, Master Faders, Mix. So now we see that this range covers Select Green LEDs 1-8. By refining the velocity range we can determine their corresponding velocity values.
+
+
+
