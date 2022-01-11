@@ -282,3 +282,15 @@ noteon 90 5 0 note:0000101 velocity:0000000
 1. When I move a fader, the fader after it moves acccordingly. That is, moving fader 1 makes fader 2 move, and so on, up to moving fader 8 which makes fader 1 move. It is good evidence that bits 0-2 indicate the fader.
 2. Bits 3-6 never got a value larger than 7. That is, bit 6 is always zero. If these bits add fader precision, then there are just three bits that add to the seven bits encoded in the value. That implies a max fader resolution of of 10-bits.
 
+## Test 4
+Test 4 sends every possible "note on" to the device on channel 1. It sends at a rate of one per 10 ms. Then I just observe what happens on the device.
+
+#### Test 4 Observations
+1. The first time I ran the test, I noticed that the program got bogged down at some point. The device was sending a message which was being reflected which caused the device to send a message and so forth in a loop. So, I disabled message reflecting.
+2. With message reflecting disabled I ran the test again and observed device LEDs turning on and off. In addition to the button LEDs, several non-button LEDs were turning on and off: meter LEDS, select LEDs, and a few of the encoder ring LEDs for encoders 1 and 2.
+3. While the test ran the device sent one "note on" message: note 0, velocity 127.
+
+#### Test 4 Conclusions
+1. All LEDs, except for the encoder ring LEDs, can be probably be controlled with "note on" messages.
+2. Oddly, a few of the encoder ring LEDs turned on, so that is a mystery. Perhaps others turned on and off quickly so that I could not see them.
+
