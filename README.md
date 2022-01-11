@@ -388,6 +388,7 @@ Observation - Controller numbers 0-63 repeatedly address the faders 1-8 and the 
 Test 9 sends sequenced sysex vectors to the device to see if anything can be found tha alters the surface. Digidesign uses ID=0x13, so we will try that. Because each data byte can be 0-127, it can take huge amounts of time to sequence through all values if the sysex message has more than a few data bytes. So, the strategy will be to limit each byte to a small range. The code has a 'numBitsPerByte' value to set the range. numBitsPerByte=2 means that it will cycle through 0-3 range. 3 means 0-7 range and so on.
 
 for example, numBytesStart=1, numBytesEnd=2, numBitsPerByte=2 sends these sysex messages:
+```
 04:15:36.432	To Port 1	SysEx		Digidesign $4 bytes	F0 13 00 F7
 04:15:36.443	To Port 1	SysEx		Digidesign $4 bytes	F0 13 01 F7
 04:15:36.452	To Port 1	SysEx		Digidesign $4 bytes	F0 13 02 F7
@@ -408,7 +409,7 @@ for example, numBytesStart=1, numBytesEnd=2, numBitsPerByte=2 sends these sysex 
 04:15:36.606	To Port 1	SysEx		Digidesign $5 bytes	F0 13 03 01 F7
 04:15:36.615	To Port 1	SysEx		Digidesign $5 bytes	F0 13 03 02 F7
 04:15:36.623	To Port 1	SysEx		Digidesign $5 bytes	F0 13 03 03 F7
-
+```
 Observations
 numBytesStart=1, numBytesEnd=2, numBitsPerByte=2
 No response from surface
@@ -428,6 +429,29 @@ Encoder rings 1-8 light up three LEDs each. All the LED rings light up around th
 So, it appears a message like this is affecting encoder rings:
 F0 13 01 D2 D3 D4 F7
 
+## Test 10
+Test 10 refines test 9 to set the first byte to 0x01 and sequnce just three bytes through ranges.
 
+For example, for numBytesStart=3, numBytesEnd=3, numBitsPerByte=3, it goes through this sequence:
+
+```
+04:33:53.863	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 00 00 00 F7
+04:33:53.872	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 00 00 01 F7
+04:33:53.882	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 00 00 02 F7
+04:33:53.892	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 00 00 03 F7
+04:33:53.903	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 00 00 04 F7
+....
+04:33:58.953	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 07 07 03 F7
+04:33:58.963	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 07 07 04 F7
+04:33:58.972	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 07 07 05 F7
+04:33:58.982	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 07 07 06 F7
+04:33:58.992	To Port 1	SysEx		Digidesign $7 bytes	F0 13 01 07 07 07 F7
+```
+
+And indeed the encoder rings light up almost immediately upon starting this sequence. Typically, Sysex messages are formed as:
+
+F0, Manufacturer ID, Device ID, Data, F7
+
+So this suggests a device ID of 0x01.
 
 
