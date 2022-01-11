@@ -314,5 +314,69 @@ Now I run this range repeatedly and observe the LEDs. I can see that the buttons
 note 1-1, vel 0-126, 100 ms
 These LEDS are ON: Send, Select Green LED 1-8, Undo, Master Faders, Mix. So now we see that this range covers Select Green LEDs 1-8. By refining the velocity range we can determine their corresponding velocity values.
 
+## Test 6
+Test 6 is similar to Test 5, but now the velocity range is reduced to 0-63 and a set of OFF and ON (bit 6) messages are created for the range. This lets me further narrow ranges to isolate the non-button LEDs and confirm that they turn ON and OFF the same as the button LEDs.
+
+note 1-1, vel 0-63, 10 ms
+As expected, these LEDS are ON: Send, Select Green LED 1-8, Undo, Master Faders, Mix.
+
+note 1-1, vel 0-31, 10 ms
+Same result: these LEDS are ON: Send, Select Green LED 1-8, Undo, Master Faders, Mix
+
+note 1-1, vel 0-15, 10 ms
+Same result: these LEDS are ON: Send, Select Green LED 1-8, Undo, Master Faders, Mix
+
+note 1-1, vel 0-7, 10 ms
+new result: these LEDS are ON: Select Green LED 1-8
+
+So, sub velocity values 0-7 address the Select Green LEDs for note = 1.
+
+note 2-2, vel 0-7, 10 ms
+new result: Solo 1-8 On
+
+note 3-3, vel 0-7, 10 ms
+new result: Mute 1-8 On
+
+note 4-4, vel 0-7, 10 ms
+new result: Select Red LEDs are ON.
+So, sub velocity values 0-7 address the Select Red LEDs for note = 4.
+
+So now I will try to zero in on the meter LEDs.
+
+note 4-127, vel 0-7, 10 ms
+Eventually, the meter LEDs turn on. But it takes a while to get there. So, lets refine the note range.
+
+note 64-127, vel 0-7, 10 ms
+The meter LEDs turn on very quick now. But oddly they turn off and on as it progresses.
+Meter 0 1-8 ON, Meter 0 1-8 OFF, Meter -3 1-8 ON, Meter 0 1-8 ON, Meter 0 1-8 OFF, Meter -3 1-8 OFF, Meter -6 1-8 ON, .... and so on. It is like the meter LEDs are bits in a counter counting up as the sequence progresses.
+
+note 64-64, vel 0-7, 10 ms
+Nothing happens.
+
+note 65-65, vel 0-7, 10 ms
+This turns on all eight Meter 0 LEDs.
+
+note 66-66, vel 0-7, 10 ms
+This turns on all eight Meter -3 LEDs and turns OFF all eight Meter 0 LEDs.
+
+note 67-67, vel 0-7, 10 ms
+This turns on all eight Meter 0 LEDs. The eight Meter -3 LEDs remain lit
+
+note 68-68, vel 0-7, 10 ms
+This turns OFF all eight Meter -3 and 0 LEDs and turn ON all eight Meter -6 LEDs.
+
+note 68-68, vel 0-7, 10 ms
+This turns OFF all eight Meter -3 LEDs and turn ON all eight Meter -6 LEDs.
+
+note 64-64, vel 0-7, 10 ms
+This turns OFF all LEDS.
+
+note 65-65, vel 0-0, 10 ms
+This turns ON all Strip 1, Meter 0 LED.
+
+I think the Note is acting like a bitfield and velocity addresses the strip.
+
+
+
 
 
