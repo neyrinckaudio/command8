@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/webmidi@next/dist/iife/webmidi.iife.js"></script>
 
     <script type="module">
-      var test = 10;
+      var test = 11;
       var c8in, c8out;
       WebMidi
         .enable({sysex: true})
@@ -75,6 +75,13 @@
             runTest9();
         if (test == 10)
             runTest10();
+        if (test == 11)
+            runTest11();
+      }
+      function runTest11()
+      {
+        var vector = [0x01, 0, 0x79, 0x7f];
+        c8out.sendSysex(0x13, vector);
       }
       function runTest10()
       {
@@ -95,8 +102,8 @@
             sysexQueue.push(msg);
           }
         }
-        var timer = setInterval(test9Sender, 10);
-        function test9Sender() {
+        var timer = setInterval(test10Sender, 10);
+        function test10Sender() {
           if (sysexQueue.length > 0)
           {
             var vector = sysexQueue.shift();
@@ -354,7 +361,7 @@
   </head>
 
   <body>
-    <h1>Command 8 Test 10</h1>
+    <h1>Command 8 Test 11</h1>
   </body>
 
 </html>
