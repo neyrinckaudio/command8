@@ -10,10 +10,10 @@
     <script src="https://cdn.jsdelivr.net/npm/webmidi@next/dist/iife/webmidi.iife.js"></script>
 
     <script type="module">
-      var test = 8;
+      var test = 9;
       var c8in, c8out;
       WebMidi
-        .enable({sysex: false})
+        .enable({sysex: true})
         .then(onEnabled)
         .catch(err => alert(err));
 
@@ -71,6 +71,40 @@
             runTest7();
         if (test == 8)
             runTest8();
+        if (test == 9)
+            runTest9();
+      }
+      function runTest9()
+      {
+        var sysexQueue = [];
+        var numBitsPerByte = 3;
+        var mask = Math.pow(2, numBitsPerByte)-1;
+        var numBytesStart = 4;
+        var numBytesEnd = 4;
+        for (var numBytes=numBytesStart; numBytes<=numBytesEnd; numBytes++)
+        {
+          for (var ctr=0; ctr<=((1<<numBitsPerByte*numBytes)-1); ctr++)
+          {
+            var msg = [];
+            for (var i=numBytes-1; i>=0; i--)
+            {
+              msg.push((ctr & (mask<<(numBitsPerByte*i))) >> (numBitsPerByte*i));
+            }
+            sysexQueue.push(msg);
+          }
+        }
+        var timer = setInterval(test9Sender, 10);
+        function test9Sender() {
+          if (sysexQueue.length > 0)
+          {
+            var vector = sysexQueue.shift();
+            c8out.sendSysex(0x13, vector);
+          }
+          else
+          {
+            clearInterval(timer);
+          }
+        }
       }
       function runTest8()
       {
@@ -286,7 +320,7 @@
   </head>
 
   <body>
-    <h1>Command 8 Test 8</h1>
+    <h1>Command 8 Test 9</h1>
   </body>
 
 </html>
