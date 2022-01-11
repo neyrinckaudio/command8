@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/webmidi@next/dist/iife/webmidi.iife.js"></script>
 
     <script type="module">
-      var test = 6;
+      var test = 7;
       var c8in, c8out;
       WebMidi
         .enable({sysex: false})
@@ -67,6 +67,16 @@
             runTest5();
         if (test == 6)
             runTest6();
+          if (test == 7)
+            runTest7();
+      }
+      function runTest7()
+      {
+        var bitfield = 15;
+        var velocity = 7;
+        var note = 64+bitfield;
+        var senderRate = 10;
+        c8out.playNote(note, {channels:1, rawAttack:velocity});
       }
       function runTest6()
       {
@@ -244,7 +254,7 @@
   </head>
 
   <body>
-    <h1>Command 8 Test 6</h1>
+    <h1>Command 8 Test 7</h1>
   </body>
 
 </html>
