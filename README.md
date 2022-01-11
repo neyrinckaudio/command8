@@ -384,6 +384,49 @@ Going back to Test 6, I could not find any way to use note on messages to light 
 
 Observation - Controller numbers 0-63 repeatedly address the faders 1-8 and the value sets the fader position. Controller numbers 64-127 appear to have no effect on the surface.
 
+## Test 9
+Test 9 sends sequenced sysex vectors to the device to see if anything can be found tha alters the surface. Digidesign uses ID=0x13, so we will try that. Because each data byte can be 0-127, it can take huge amounts of time to sequence through all values if the sysex message has more than a few data bytes. So, the strategy will be to limit each byte to a small range. The code has a 'numBitsPerByte' value to set the range. numBitsPerByte=2 means that it will cycle through 0-3 range. 3 means 0-7 range and so on.
+
+for example, numBytesStart=1, numBytesEnd=2, numBitsPerByte=2 sends these sysex messages:
+04:15:36.432	To Port 1	SysEx		Digidesign $4 bytes	F0 13 00 F7
+04:15:36.443	To Port 1	SysEx		Digidesign $4 bytes	F0 13 01 F7
+04:15:36.452	To Port 1	SysEx		Digidesign $4 bytes	F0 13 02 F7
+04:15:36.462	To Port 1	SysEx		Digidesign $4 bytes	F0 13 03 F7
+04:15:36.472	To Port 1	SysEx		Digidesign $5 bytes	F0 13 00 00 F7
+04:15:36.482	To Port 1	SysEx		Digidesign $5 bytes	F0 13 00 01 F7
+04:15:36.493	To Port 1	SysEx		Digidesign $5 bytes	F0 13 00 02 F7
+04:15:36.502	To Port 1	SysEx		Digidesign $5 bytes	F0 13 00 03 F7
+04:15:36.513	To Port 1	SysEx		Digidesign $5 bytes	F0 13 01 00 F7
+04:15:36.523	To Port 1	SysEx		Digidesign $5 bytes	F0 13 01 01 F7
+04:15:36.532	To Port 1	SysEx		Digidesign $5 bytes	F0 13 01 02 F7
+04:15:36.543	To Port 1	SysEx		Digidesign $5 bytes	F0 13 01 03 F7
+04:15:36.552	To Port 1	SysEx		Digidesign $5 bytes	F0 13 02 00 F7
+04:15:36.563	To Port 1	SysEx		Digidesign $5 bytes	F0 13 02 01 F7
+04:15:36.573	To Port 1	SysEx		Digidesign $5 bytes	F0 13 02 02 F7
+04:15:36.583	To Port 1	SysEx		Digidesign $5 bytes	F0 13 02 03 F7
+04:15:36.592	To Port 1	SysEx		Digidesign $5 bytes	F0 13 03 00 F7
+04:15:36.606	To Port 1	SysEx		Digidesign $5 bytes	F0 13 03 01 F7
+04:15:36.615	To Port 1	SysEx		Digidesign $5 bytes	F0 13 03 02 F7
+04:15:36.623	To Port 1	SysEx		Digidesign $5 bytes	F0 13 03 03 F7
+
+Observations
+numBytesStart=1, numBytesEnd=2, numBitsPerByte=2
+No response from surface
+
+numBytesStart=3, numBytesEnd=3, numBitsPerByte=2
+No response from surface
+
+numBytesStart=4, numBytesEnd=4, numBitsPerByte=2
+Encoder rings 1-4 light up two LEDs each.
+
+numBytesStart=5, numBytesEnd=5, numBitsPerByte=2
+No response from surface
+
+numBytesStart=4, numBytesEnd=4, numBitsPerByte=3
+Encoder rings 1-8 light up three LEDs each. All the LED rings light up around the same time, near the start of the test. The test keeps running and nothing happens thereafter. Watching it again, it appears the LED rings light up at about the time the first byte changes from 0 to 1. All the changes happen while that first byte == 1 I think.
+
+So, it appears a message like this is affecting encoder rings:
+F0 13 01 D2 D3 D4 F7
 
 
 
