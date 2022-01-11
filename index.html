@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/webmidi@next/dist/iife/webmidi.iife.js"></script>
 
     <script type="module">
-      var test = 7;
+      var test = 8;
       var c8in, c8out;
       WebMidi
         .enable({sysex: false})
@@ -67,8 +67,40 @@
             runTest5();
         if (test == 6)
             runTest6();
-          if (test == 7)
+        if (test == 7)
             runTest7();
+        if (test == 8)
+            runTest8();
+      }
+      function runTest8()
+      {
+        var vectorQueue = [];
+        var startController = 0;
+        var endController = 127;
+        var controllerInc = 1;
+        var startValue = 0;
+        var endValue = 127;
+        var valueInc = 1;
+        var senderRate = 10;
+        for (var controller=startController; controller<=endController; controller+=controllerInc)
+        {
+          for (var value=startValue; value<=endValue; value+=valueInc)
+          {
+            vectorQueue.push([controller, value]);
+          }
+        }
+        var timer = setInterval(test8Sender, senderRate);
+        function test8Sender() {
+          if (vectorQueue.length > 0)
+          {
+            var vector = vectorQueue.shift();
+            c8out.sendControlChange(vector[0], vector[1], {channels:1});
+          }
+          else
+          {
+            clearInterval(timer);
+          }
+        }
       }
       function runTest7()
       {
@@ -254,7 +286,7 @@
   </head>
 
   <body>
-    <h1>Command 8 Test 7</h1>
+    <h1>Command 8 Test 8</h1>
   </body>
 
 </html>
