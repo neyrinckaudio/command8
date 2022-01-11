@@ -45,7 +45,7 @@
         }
 
         const listener = WebMidi.inputs[0].addListener("midimessage", e => {
-            doTest2(e.message);
+            doTest3(e.message);
             });
       }
       function displayByte(byte)
@@ -53,10 +53,11 @@
         document.body.innerHTML+=byte.toString(16);
         document.body.innerHTML+=' ';
       }
-      function byteString(byte, base)
+      function byteString(byte, base, padlength)
       {
+        if (!padlength) padlength = 7;
         var val = byte.toString(base);
-        val = val.padStart(7, '0');
+        val = val.padStart(padlength, '0');
         val+=' ';
         return val;
       }
@@ -109,13 +110,43 @@
         document.body.innerHTML+='<br>';
         c8out.send(message.data);
       }
-
+      function doTest3(message) {
+        // display message type
+        document.body.innerHTML+= `${message.type} `;
+        // display message data
+        message.data.forEach(displayByte);
+        if (message.type == 'noteon')
+        {
+          // display note info
+          document.body.innerHTML+=' note:';
+          document.body.innerHTML+=byteString(message.data[1], 2);
+          document.body.innerHTML+=' velocity:';
+          document.body.innerHTML+=byteString(message.data[2], 2);
+        }
+        if (message.type == 'controlchange')
+        {
+          // display control change info
+          document.body.innerHTML+=' controller:';
+          document.body.innerHTML+=byteString(message.data[1]>>3, 2, 4);
+          document.body.innerHTML+=' ';
+          document.body.innerHTML+=byteString(message.data[1]&7, 2, 3);
+          document.body.innerHTML+=' value:';
+          document.body.innerHTML+=byteString(message.data[2], 2);
+        }
+        document.body.innerHTML+='<br>';
+        if (message.type == 'controlchange')
+        {
+          // display control change info
+          message.data[1] += 1;
+        }
+        c8out.send(message.data);
+      }
     </script>
 
   </head>
 
   <body>
-    <h1>Command 8 Test 2</h1>
+    <h1>Command 8 Test 3</h1>
   </body>
 
 </html>
