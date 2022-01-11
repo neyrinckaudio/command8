@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/webmidi@next/dist/iife/webmidi.iife.js"></script>
 
     <script type="module">
+      var test = 4;
       var c8in, c8out;
       WebMidi
         .enable({sysex: false})
@@ -45,8 +46,46 @@
         }
 
         const listener = WebMidi.inputs[0].addListener("midimessage", e => {
-            doTest3(e.message);
+            switch (test)
+            {
+              case 1: displayFormat1(e.message); break;
+              case 2: displayFormat2(e.message); break;
+              case 3: displayFormat3(e.message); break;
+              case 4: displayFormat3(e.message); break;
+            }
+            if (e.message.type == 'controlchange')
+            {
+              // display control change info
+              e.message.data[1] += 1;
+            }
+            if (test != 4)  // don't reflect
+              c8out.send(message.data);
             });
+        if (test == 4)
+            runTest4();
+      }
+      function runTest4()
+      {
+        var vectorQueue = [];
+        for (var note=0; note<128; note++)
+        {
+          for (var vel=0; vel<128; vel++)
+          {
+            vectorQueue.push([note, vel]);
+          }
+        }
+        var timer = setInterval(test4Sender, 10);
+        function test4Sender() {
+          if (vectorQueue.length > 0)
+          {
+            var vector = vectorQueue.shift();
+            c8out.playNote(vector[0], {channels:1, rawAttack:vector[1]});
+          }
+          else
+          {
+            clearInterval(timer);
+          }
+        }
       }
       function displayByte(byte)
       {
@@ -61,7 +100,7 @@
         val+=' ';
         return val;
       }
-      function doTest1(message) {
+      function displayFormat1(message) {
         // display message type
         document.body.innerHTML+= `${message.type} `;
         // display message data
@@ -86,7 +125,7 @@
         document.body.innerHTML+='<br>';
         c8out.send(message.data);
       }
-      function doTest2(message) {
+      function displayFormat2(message) {
         // display message type
         document.body.innerHTML+= `${message.type} `;
         // display message data
@@ -110,7 +149,7 @@
         document.body.innerHTML+='<br>';
         c8out.send(message.data);
       }
-      function doTest3(message) {
+      function displayFormat3(message) {
         // display message type
         document.body.innerHTML+= `${message.type} `;
         // display message data
@@ -134,19 +173,13 @@
           document.body.innerHTML+=byteString(message.data[2], 2);
         }
         document.body.innerHTML+='<br>';
-        if (message.type == 'controlchange')
-        {
-          // display control change info
-          message.data[1] += 1;
-        }
-        c8out.send(message.data);
       }
     </script>
 
   </head>
 
   <body>
-    <h1>Command 8 Test 3</h1>
+    <h1>Command 8 Test 4</h1>
   </body>
 
 </html>
