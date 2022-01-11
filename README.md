@@ -454,4 +454,58 @@ F0, Manufacturer ID, Device ID, Data, F7
 
 So this suggests a device ID of 0x01.
 
+## Test 11
+For Test 11 I will manually try different vectors to see if any patterns emerge.
+
+var vector = [0x01, 0, 0, 0];
+No changes to surface
+
+var vector = [0x01, 0, 0, 1];
+Encoder 1, LED 1 turns ON
+
+var vector = [0x01, 0, 0, 2];
+Encoder 1, LED 1 turns OFF, LED 2 turns ON
+
+var vector = [0x01, 0, 0, 3];
+Encoder 1, LED 1 turns ON, LED 2 turns ON
+
+var vector = [0x01, 0, 0, 15];
+Encoder 1, LED 1-4 on.
+
+Byte 4 appears to be a bitfield for encoder 0.
+
+var vector = [0x01, 0, 0, 0x7f];
+Encoder 1, LED 1-8 on.
+
+var vector = [0x01, 0, 0x01, 0x7f];
+Encoder 2, LED 1-8 on.
+
+var vector = [0x01, 0, 0x02, 0x7f];
+Encoder 2, LED 1-8 on.
+
+var vector = [0x01, 0, 0x07, 0x7f];
+Encoder 2, LED 1-8 on.
+
+Byte 3 appears to be an address for the encoder 1-8.
+
+var vector = [0x01, 0, 0x08, 0x7f];
+Encoder 1, LED 1-9 on.
+
+var vector = [0x01, 0, 0x18, 0x7f];
+Encoder 1, LED 1-10 on.
+
+var vector = [0x01, 0, 0x78, 0x7f];
+Encoder 1, LED 1-12 on.
+
+The upper part of Byte 3 also appears to be a bit field.
+
+var vector = [0x01, 0, 0x79, 0x7f];
+Encoder 2, LED 1-12 on.
+
+So, that's it, now I can light any encoder ring LED.
+
+
+
+
+
 
